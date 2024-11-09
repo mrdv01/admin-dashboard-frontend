@@ -1,36 +1,170 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Blog Management System
 
-## Getting Started
+A full-stack blog management system built with Next.js, Supabase, and shadcn/ui components.
 
-First, run the development server:
+## Features
+
+- 📝 Create, edit, and delete blog posts
+- 📊 Dashboard with blog statistics
+- 📱 Responsive design
+- 🎨 modern ui
+
+## Tech Stack
+
+- **Frontend**: Next.js 15, React, Tailwind CSS
+- **Backend**: Supabase (PostgreSQL)
+- **Authentication**: Supabase Auth
+- **Styling**: Tailwind CSS
+- **Charts**: Recharts
+- **Icons**: Lucide React
+
+## Prerequisites
+
+- Node.js 18.17 or later
+- npm or pnpm
+- Supabase account
+- Git
+
+## Setup Instructions
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/yourusername/blog-management-system
+cd blog-management-system
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+# or
+pnpm install
+```
+
+### 3. Environment Setup
+
+Create a `.env.local` file in the root directory:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### 4. Database Setup
+
+Run the following SQL script in your Supabase SQL editor:
+
+```sql
+-- Create blogs table
+CREATE TABLE blogs (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    content TEXT,
+    status VARCHAR(50) DEFAULT 'draft',
+    author_id UUID REFERENCES auth.users(id),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW())
+);
+
+-- Create RLS policies
+ALTER TABLE blogs ENABLE ROW LEVEL SECURITY;
+
+-- Policy for viewing published posts (public)
+CREATE POLICY "Public blogs are viewable by everyone" ON blogs
+    FOR SELECT
+    USING (status = 'published');
+
+-- Policy for authors to manage their own posts
+CREATE POLICY "Users can manage their own blogs" ON blogs
+    FOR ALL
+    USING (auth.uid() = author_id);
+
+-- Create function to update timestamp
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- Create trigger for updating timestamp
+CREATE TRIGGER update_blogs_updated_at
+    BEFORE UPDATE ON blogs
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+```
+
+### 5. Install Required shadcn/ui Components
+
+```bash
+npx shadcn-ui@latest init
+npx shadcn-ui@latest add button card input textarea alert dialog sheet table toast
+```
+
+### 6. Run the Development Server
 
 ```bash
 npm run dev
 # or
-yarn dev
-# or
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
+## Key Features Implementation
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Blog Management
 
-## Deploy on Vercel
+- CRUD operations for blog posts
+- Draft/Published status
+- Rich text editor
+- Image upload support
+- Pagination
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Dashboard
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Blog statistics overview
+
+
+## Deployment
+
+1. Create a new project on Vercel
+2. Connect your GitHub repository
+3. Add environment variables
+4. Deploy!
+
+## Screenshots
+
+![image](https://github.com/user-attachments/assets/65c2fe6c-1056-4011-9596-e691c69545d4)
+
+*Dashboard View*
+
+![image](https://github.com/user-attachments/assets/ef15429c-6ed8-4135-bf32-82d81494b3fb)
+
+*Blog Editor Interface*
+
+![image](https://github.com/user-attachments/assets/9bd0f8ed-9c94-4641-9c1e-787045b80369)
+
+*Blog Posts List*
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Support
+
+For support, email support@yourdomain.com or open an issue in the GitHub repository.
