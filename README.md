@@ -1,6 +1,6 @@
 # Blog Management System
 
-A full-stack blog management system built with Next.js, Supabase, and shadcn/ui components.
+A full-stack blog management system built with Next.js, Supabase.
 
 ## Features
 
@@ -30,8 +30,8 @@ A full-stack blog management system built with Next.js, Supabase, and shadcn/ui 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/blog-management-system
-cd blog-management-system
+git clone https://github.com/yourusername/admin-dashboard-frontend
+cd admin-dashboard-frontend
 ```
 
 ### 2. Install Dependencies
@@ -123,7 +123,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 - CRUD operations for blog posts
 - Draft/Published status
-- Rich text editor
+- text editor
 - Image upload support
 - Pagination
 
@@ -165,6 +165,3 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Support
-
-For support, email support@yourdomain.com or open an issue in the GitHub repository.
